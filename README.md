@@ -667,6 +667,55 @@ Ask: "Show me the dependency graph"
 - **Noise Filtering**: Automatically ignores `node_modules`, lockfiles, build artifacts
 - **Multi-File Understanding**: Traces dependencies across files
 
+###  Conversation Memory & Context Understanding
+
+RepoLLM maintains full conversation history and context awareness across your entire session, enabling natural follow-up questions and deep contextual understanding.
+
+**Persistent Conversation Storage:**
+- **Automatic Saving**: All conversations are automatically saved to browser localStorage, persisting across page refreshes and browser sessions
+- **Per-Repository Sessions**: Each repository maintains its own conversation history, allowing you to switch between projects without losing context
+- **Smart Storage Management**: Automatic cleanup of old conversations when storage limit (10MB) is reached, prioritizing recent conversations
+
+**Context-Aware Responses:**
+- **Conversation History Integration**: The AI receives the full conversation history with each query, enabling it to:
+  - Reference previous questions and answers
+  - Understand follow-up questions without repetition
+  - Build upon earlier explanations
+  - Maintain context about discussed files and features
+- **Token-Aware History**: Conversation history is included in token calculations, with intelligent truncation if needed to stay within model limits
+- **Sanitized History**: All conversation history is sanitized before being sent to the AI to prevent prompt injection attacks
+
+**How It Works:**
+```typescript
+// Conversation is automatically saved on every message
+useEffect(() => {
+    if (initialized && messages.length > 1) {
+        saveConversation(owner, repo, messages);
+    }
+}, [messages, initialized, owner, repo]);
+
+// History is loaded when you return to a repository
+const saved = loadConversation(owner, repo);
+if (saved && saved.length > 1) {
+    setMessages(saved);
+    toast.info('Conversation restored');
+}
+
+// History is passed to AI with each query
+const answer = await generateAnswer(
+    query,
+    context,
+    { owner, repo },
+    history // Full conversation history
+);
+```
+
+**Benefits:**
+- **Natural Dialogue**: Ask follow-up questions like "How does that work?" or "What about error handling?" without repeating context
+- **Progressive Understanding**: Build complex understanding through multiple questions
+- **Session Continuity**: Return to a repository later and continue where you left off
+- **Efficient Token Usage**: History is intelligently managed to maximize context while staying within token limits
+
 ###  Visual Architecture Maps
 
 - **Auto-Generated Diagrams**: Complex code logic → Mermaid flowcharts
