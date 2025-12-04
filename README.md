@@ -1,4 +1,4 @@
-# RepoLLM - For Pentera
+# RepoLLM
 
 
 <div align="center">
