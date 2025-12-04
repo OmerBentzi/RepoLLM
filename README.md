@@ -7,8 +7,6 @@
 
 </div>
 
-## 📸 Screenshots
-
 <div align="center">
 
 ![RepoLLM Homepage](./docs/images/Demo_2.png)
