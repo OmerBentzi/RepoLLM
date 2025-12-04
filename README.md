@@ -279,39 +279,6 @@ await cacheQuerySelection(owner, repo, query, selectedFiles);
 - **Context Building**: 50,000-150,000 tokens per query
 - **Response Generation**: 1,000-10,000 tokens
 
-### Cost Structure (Per Query)
-
-| Component | Tokens | Cost (GPT-4o-mini) | Optimization |
-|-----------|--------|-------------------|--------------|
-| File Selection | 500-2K | $0.0001-0.0004 | **Cached 24h** → $0 after first query |
-| Context Building | 50K-150K | $0.01-0.03 | Intelligent selection minimizes |
-| Response | 1K-10K | $0.0002-0.002 | Streaming reduces latency |
-| **Total (First Query)** | ~51K-162K | **$0.01-0.03** | |
-| **Total (Cached)** | ~51K-160K | **$0.01-0.03** | Selection cached |
-
-### Scaling Economics
-
-**Single User (100 queries/month):**
-- First-time queries: 30 queries × $0.02 = $0.60
-- Cached queries: 70 queries × $0.01 = $0.70
-- **Total: $1.30/month**
-
-**100 Users (10,000 queries/month):**
-- With 70% cache hit rate: **$300-500/month**
-- Without caching: **$1,000-3,000/month**
-- **Cache ROI: 60-80% cost reduction**
-
-### Performance Benchmarks
-
-| Operation | Time | Optimization |
-|-----------|------|--------------|
-| Repository Clone | 10-60s | One-time, cached locally |
-| File Selection (AI) | 2-5s | **Cached 24h** → <10ms |
-| File Reading | 100ms/file | Sequential (can parallelize) |
-| Context Building | 1-3s | Token counting optimization |
-| AI Response (Streaming) | 5-30s | Progressive rendering |
-
----
 
 ##  System Architecture
 
