@@ -3,11 +3,6 @@
 
 <div align="center">
 
-
-**RepoLLM - AI-Powered Code Analysis Platform**
-
-> **Stop reading code. Start talking to it.** 🚀
-
 </div>
 
 ---
