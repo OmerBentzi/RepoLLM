@@ -804,14 +804,3 @@ const answer = await generateAnswer(
 - **Truncation**: Graceful handling when approaching 200K limit
 - **Line Number Formatting**: Efficient 4-digit padding
 
----
-
-##  Production Considerations
-
-### Current Limitations
-
-1. **In-Memory Cache**: Lost on server restart
-2. **No Rate Limiting**: Vulnerable to abuse
-3. **Single Server**: No horizontal scaling
-4. **Disk Storage**: No cleanup mechanism for old repos
-5. **No Monitoring**: Console.log only
