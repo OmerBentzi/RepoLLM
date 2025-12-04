@@ -542,29 +542,3 @@ Ask: "Show me the dependency graph"
 3. **Single Server**: No horizontal scaling
 4. **Disk Storage**: No cleanup mechanism for old repos
 5. **No Monitoring**: Console.log only
-
-### Recommended Improvements
-
-#### Phase 1: Production Hardening (Critical)
-
-- [ ] **Redis Cache**: Persistent caching across restarts
-- [ ] **Rate Limiting**: Per-IP and per-user limits
-- [ ] **Error Tracking**: Sentry or similar
-- [ ] **Repository Cleanup**: LRU cache with size limits
-- [ ] **Monitoring**: Structured logging and metrics
-
-#### Phase 2: Scalability (High Priority)
-
-- [ ] **Database**: PostgreSQL for metadata and analytics
-- [ ] **Background Jobs**: Bull/BullMQ for long-running tasks
-- [ ] **Parallel Processing**: Worker threads for file reading
-- [ ] **CDN**: Static asset optimization
-
-#### Phase 3: Enterprise Features (Medium Priority)
-
-- [ ] **Authentication**: OAuth integration
-- [ ] **Multi-Region**: Global deployment
-- [ ] **API Layer**: RESTful API for integrations
-- [ ] **Analytics**: Usage patterns and insights
-
-
