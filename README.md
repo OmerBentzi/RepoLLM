@@ -386,8 +386,6 @@ graph TD
 
 ---
 
----
-
 ## 📖 Usage Examples
 
 ### Analyze Repository Architecture
@@ -501,27 +499,6 @@ Ask: "Show me the dependency graph"
 - **Regex & AST Search**: Power-user structural matching
 - **Instant Navigation**: Jump to relevant lines
 
----
-
-## 🆚 RepoLLM vs The Market
-
-| Feature | 🧠 RepoLLM | 🐙 GitHub Copilot | 🦎 Greptile | 🚢 Onboard AI |
-|:---|:---:|:---:|:---:|:---:|
-| **Platform** | 🌐 Web (Any Browser) | 🌐 Web (GitHub.com) | 🌐 Web Dashboard | 🌐 Web Dashboard |
-| **Access** | ⚡ Instant (Public URL) | Requires Repo Access | Requires App Install | Requires App Install |
-| **Pricing** | 💸 100% Free | Enterprise / Paid | Paid (Free Tier) | Paid (Free Tier) |
-| **Architecture** | **CAG (Full Context)** | RAG (Indexed) | RAG (Vector DB) | RAG (Vector DB) |
-| **Visual Maps** | ✅ Auto-Flowcharts | ❌ No | ❌ No | ❌ No |
-| **Mobile UX** | ✅ Mobile-First | ⚠️ Desktop Focused | ❌ Desktop Only | ❌ Desktop Only |
-| **Security Scan** | ✅ Free AI Audit | ✅ (Advanced Security) | ❌ No | ❌ No |
-| **Local-First** | ✅ No API Limits | ❌ API Dependent | ❌ API Dependent | ❌ API Dependent |
-
-### Why RepoLLM?
-
-1. **The "Just Works" Factor**: No installation, no permissions, instant analysis
-2. **Superior Understanding**: CAG architecture provides better code comprehension
-3. **Mobile Freedom**: Analyze code from anywhere, on any device
-4. **Cost Efficiency**: Query caching reduces costs by 60-80%
 
 ---
 
