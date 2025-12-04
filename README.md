@@ -1,12 +1,38 @@
 # RepoLLM
 
-
 <div align="center">
+
+![RepoLLM Homepage](./docs/images/Demo_1.png)
+
+**RepoLLM - AI-Powered Code Analysis Platform**
+
+> **Stop reading code. Start talking to it.** 🚀
 
 </div>
 
+## 📸 Screenshots
 
-##  Executive Summary
+### Homepage
+<div align="center">
+
+![RepoLLM Homepage](./docs/images/Demo_1.png)
+
+*Clean, modern interface with gradient background and intuitive repository input*
+
+</div>
+
+### Chat Interface
+<div align="center">
+
+![RepoLLM Chat Interface](./docs/images/Demo_2.png)
+
+*Interactive chat interface with file tree navigation and AI-powered code analysis*
+
+</div>
+
+---
+
+## 🎯 Executive Summary
 
 RepoLLM is a production-grade AI-powered code analysis platform that enables developers to understand, analyze, and interact with GitHub repositories through natural language. Built on **Context Augmented Generation (CAG)** architecture, RepoLLM provides superior code understanding by loading complete file contexts into large language models, rather than fragmented vector chunks.
 
