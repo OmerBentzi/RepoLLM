@@ -402,21 +402,6 @@ const index = buildContextIndex(context);
 - **Expansion**: ~5ms
 - **Total**: ~15ms (cached) vs. 2-5s (AI selection)
 
-#### Trade-offs
-
-**Current Approach (Heuristic-Based):**
-- ✅ Fast (<20ms)
-- ✅ Cheap (no AI call)
-- ⚠️ Less accurate than embeddings
-- ⚠️ May miss semantically related files
-
-**Alternative (Embedding-Based):**
-- ✅ More accurate
-- ✅ Better semantic matching
-- ⚠️ Slower (embedding generation)
-- ⚠️ More expensive (embedding API)
-
-**Decision**: Heuristic-based for speed and cost. Embeddings can be added later for complex queries.
 
 ### 3. Context Management (`context-utils.ts`)
 
