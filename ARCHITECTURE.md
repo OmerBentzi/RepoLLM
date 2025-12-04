@@ -942,33 +942,6 @@ const contents = await Promise.all(
 - Separation of concerns
 - Clean component structure
 
-###  Needs Improvement (Before Production)
-
-#### Critical (Must Have)
-
-1. **Persistent Caching**
-   - **Current**: In-memory (lost on restart)
-   - **Impact**: High (affects performance and cost)
-   - **Solution**: Redis integration
-   - **Effort**: 2-3 days
-
-2. **Rate Limiting**
-   - **Current**: None
-   - **Impact**: High (vulnerable to abuse)
-   - **Solution**: Per-IP limits, middleware
-   - **Effort**: 1-2 days
-
-3. **Error Tracking**
-   - **Current**: Console.log only
-   - **Impact**: High (can't debug production issues)
-   - **Solution**: Sentry integration
-   - **Effort**: 1 day
-
-4. **Repository Cleanup**
-   - **Current**: No cleanup (disk fills up)
-   - **Impact**: Medium (disk space concerns)
-   - **Solution**: LRU cache with size limits
-   - **Effort**: 2-3 days
   
    ---  
 ## Design Decisions & Trade-offs
