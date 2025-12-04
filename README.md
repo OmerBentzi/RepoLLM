@@ -8,18 +8,18 @@
 
 > **Stop reading code. Start talking to it.** 🚀
 
-
 </div>
 
-### Chat Interface
+## 📸 Screenshots
+
+### Homepage
 <div align="center">
 
-![RepoLLM Chat Interface](./docs/images/Demo_2.png)
+![RepoLLM Homepage](./docs/images/Demo_1.png)
 
-*Interactive chat interface with file tree navigation and AI-powered code analysis*
+*Clean, modern interface with gradient background and intuitive repository input*
 
 </div>
-
 ---
 
 ## 🎯 Executive Summary
