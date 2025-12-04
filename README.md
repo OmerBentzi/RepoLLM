@@ -1,6 +1,5 @@
-# RepoLLM
+# RepoLLM - For Pentera
 
-![RepoLLM Banner](/public/RepoLLM.png)
 
 <div align="center">
 
