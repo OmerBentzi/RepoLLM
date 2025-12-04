@@ -1055,7 +1055,6 @@ User → Next.js App → Local FS → OpenAI
 **Limitations:**
 - Single point of failure
 - No horizontal scaling
-- Cache lost on restart
 - Disk space accumulates
 
 **Capacity:**
