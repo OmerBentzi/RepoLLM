@@ -65,49 +65,6 @@ RepoLLM is a production-grade AI-powered code analysis platform built on **Conte
 └──────────────────────┘    └──────────────────────┘
 ```
 
-### Component Interaction Flow
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant UI
-    participant Server
-    participant LocalFS
-    participant Cache
-    participant OpenAI
-
-    User->>UI: Enter repository URL
-    UI->>Server: fetchGitHubData(url)
-    Server->>LocalFS: Check if repo exists
-    alt Repo not exists
-        Server->>LocalFS: Clone repository
-    else Repo exists
-        Server->>LocalFS: Pull latest changes
-    end
-    Server->>LocalFS: Read file tree
-    Server->>UI: Return repo data + file tree
-
-    User->>UI: Ask question
-    UI->>Server: analyzeRepoFiles(query)
-    Server->>Cache: Check query cache
-    alt Cache hit
-        Cache->>Server: Return cached file list
-    else Cache miss
-        Server->>OpenAI: Select relevant files
-        OpenAI->>Server: Return file list
-        Server->>Cache: Cache selection (24h TTL)
-    end
-    Server->>LocalFS: Read selected files
-    Server->>Server: Build context with line numbers
-    Server->>Server: Normalize context
-    Server->>OpenAI: Generate answer (streaming)
-    OpenAI-->>Server: Stream tokens
-    Server-->>UI: Stream response
-    UI-->>User: Display answer
-```
-
----
-
 ## CAG vs RAG: Architectural Deep Dive
 
 ### The Fundamental Problem RAG Solves (and Where It Fails)
