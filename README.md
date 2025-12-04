@@ -16,7 +16,7 @@
 </div>
 
 
-## 🎯 Executive Summary
+##  Executive Summary
 
 RepoLLM is a production-grade AI-powered code analysis platform that enables developers to understand, analyze, and interact with GitHub repositories through natural language. Built on **Context Augmented Generation (CAG)** architecture, RepoLLM provides superior code understanding by loading complete file contexts into large language models, rather than fragmented vector chunks.
 
@@ -270,48 +270,6 @@ await cacheQuerySelection(owner, repo, query, selectedFiles);
 
 ---
 
-##  Performance & Cost Analysis
-
-### Token Management
-
-- **Context Window**: 200,000 tokens (GPT-4o-mini)
-- **File Selection**: ~500-2,000 tokens (cached for 24h)
-- **Context Building**: 50,000-150,000 tokens per query
-- **Response Generation**: 1,000-10,000 tokens
-
-### Cost Structure (Per Query)
-
-| Component | Tokens | Cost (GPT-4o-mini) | Optimization |
-|-----------|--------|-------------------|--------------|
-| File Selection | 500-2K | $0.0001-0.0004 | **Cached 24h** → $0 after first query |
-| Context Building | 50K-150K | $0.01-0.03 | Intelligent selection minimizes |
-| Response | 1K-10K | $0.0002-0.002 | Streaming reduces latency |
-| **Total (First Query)** | ~51K-162K | **$0.01-0.03** | |
-| **Total (Cached)** | ~51K-160K | **$0.01-0.03** | Selection cached |
-
-### Scaling Economics
-
-**Single User (100 queries/month):**
-- First-time queries: 30 queries × $0.02 = $0.60
-- Cached queries: 70 queries × $0.01 = $0.70
-- **Total: $1.30/month**
-
-**100 Users (10,000 queries/month):**
-- With 70% cache hit rate: **$300-500/month**
-- Without caching: **$1,000-3,000/month**
-- **Cache ROI: 60-80% cost reduction**
-
-### Performance Benchmarks
-
-| Operation | Time | Optimization |
-|-----------|------|--------------|
-| Repository Clone | 10-60s | One-time, cached locally |
-| File Selection (AI) | 2-5s | **Cached 24h** → <10ms |
-| File Reading | 100ms/file | Sequential (can parallelize) |
-| Context Building | 1-3s | Token counting optimization |
-| AI Response (Streaming) | 5-30s | Progressive rendering |
-
----
 
 ##  System Architecture
 
@@ -396,7 +354,7 @@ graph TD
 
 ---
 
-## 📖 Usage Examples
+##  Usage Examples
 
 ### Real-World Example: Analyzing httpx
 
@@ -533,7 +491,7 @@ Ask: "Show me the dependency graph"
 
 ---
 
-## 🔒 Privacy & Security
+##  Privacy & Security
 
 ### Security Measures
 
@@ -613,7 +571,7 @@ Ask: "Show me the dependency graph"
 
 ---
 
-## 📐 Technical Deep Dive
+##  Technical Deep Dive
 
 ### CAG Architecture Implementation
 
@@ -691,29 +649,3 @@ Ask: "Show me the dependency graph"
 3. **Single Server**: No horizontal scaling
 4. **Disk Storage**: No cleanup mechanism for old repos
 5. **No Monitoring**: Console.log only
-
-### Recommended Improvements
-
-#### Phase 1: Production Hardening (Critical)
-
-- [ ] **Redis Cache**: Persistent caching across restarts
-- [ ] **Rate Limiting**: Per-IP and per-user limits
-- [ ] **Error Tracking**: Sentry or similar
-- [ ] **Repository Cleanup**: LRU cache with size limits
-- [ ] **Monitoring**: Structured logging and metrics
-
-#### Phase 2: Scalability (High Priority)
-
-- [ ] **Database**: PostgreSQL for metadata and analytics
-- [ ] **Background Jobs**: Bull/BullMQ for long-running tasks
-- [ ] **Parallel Processing**: Worker threads for file reading
-- [ ] **CDN**: Static asset optimization
-
-#### Phase 3: Enterprise Features (Medium Priority)
-
-- [ ] **Authentication**: OAuth integration
-- [ ] **Multi-Region**: Global deployment
-- [ ] **API Layer**: RESTful API for integrations
-- [ ] **Analytics**: Usage patterns and insights
-
-
