@@ -118,7 +118,7 @@ If you encounter "Filename too long" errors:
 - The app will work with a partial clone - missing files are logged but don't break functionality
 - Docker handles this automatically on all platforms
 
-```
+---
 
 ## 🎯 Executive Summary
 
