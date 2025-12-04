@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  repollm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: repollm
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL:-http://localhost:3000}
+    volumes:
+      # Persist cloned repositories (optional - remove if you don't need persistence)
+      - repos-data:/app/.repos
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  repos-data:
+

@@ -1,0 +1,90 @@
+@import "tailwindcss";
+@import "@tailwindcss/typography";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-montserrat);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+@property --angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0turn;
+}
+
+@keyframes spin-gradient {
+  to {
+    --angle: 1turn;
+  }
+}
+
+.conic-border-container {
+  position: relative;
+  border-radius: 0.5rem;
+  /* rounded-lg */
+  border: 2px solid transparent;
+  /* uniform width */
+  isolation: isolate;
+}
+
+.conic-border-container::before {
+  content: " ";
+  position: absolute;
+  inset: -2px;
+  /* negative border width */
+  z-index: -1;
+  border: inherit;
+  border-radius: inherit;
+  background-image: conic-gradient(from var(--angle), #3b82f6 0%, #8b5cf6 25%, #ec4899 50%, #06b6d4 75%, #3b82f6 100%);
+  background-origin: border-box;
+  -webkit-mask:
+    linear-gradient(black, black) content-box,
+    linear-gradient(black, black);
+  mask: linear-gradient(black, black),
+    linear-gradient(black, black);
+  -webkit-mask-clip: content-box, border-box;
+  mask-clip: content-box, border-box;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin-gradient 3s linear infinite;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 500;
+  /* Medium weight for better visibility */
+}
+
+/* Hide Next.js Dev Tools */
+[aria-label*="Next.js Dev Tools"],
+[aria-label*="Open Next.js Dev Tools"],
+[aria-label*="Close Next.js Dev Tools"],
+[data-nextjs-dev-tools-button],
+[data-next-mark],
+#nextjs-dev-tools-menu,
+[id*="nextjs-dev-tools"],
+[class*="nextjs-dev-tools"],
+[class*="dev-tools-indicator"],
+[data-nextjs-dev-overlay] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}

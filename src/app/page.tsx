@@ -1,0 +1,154 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Github, ArrowRight, Loader2 } from "lucide-react";
+import { fetchGitHubData } from "./actions";
+import FeatureTiles from "@/components/FeatureTiles";
+import { CAGBadge } from "@/components/CAGBadge";
+import CAGComparison from "@/components/CAGComparison";
+import Footer from "@/components/Footer";
+
+export default function Home() {
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const result = await fetchGitHubData(input);
+
+      if (result.error) {
+        setError(result.error);
+      } else {
+        // Store data in localStorage or pass via query params/state manager
+        // For simplicity, we'll use query params for the ID and fetch again or use a context
+        // Let's just navigate to /chat with the query
+        router.push(`/chat?q=${encodeURIComponent(input)}`);
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <main className="flex flex-col bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950 text-white overflow-x-hidden relative">
+      {/* Fixed Background Layer */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-20%] left-[-10%] w-[80vw] max-w-[500px] h-[80vw] max-h-[500px] bg-violet-600/30 rounded-full blur-[80px] md:blur-[128px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[80vw] max-w-[500px] h-[80vw] max-h-[500px] bg-cyan-500/30 rounded-full blur-[80px] md:blur-[128px]" />
+      </div>
+
+      {/* Hero Section */}
+      <section className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="z-10 flex flex-col items-center text-center max-w-2xl w-full px-4"
+        >
+          <div className="mb-8 p-4 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
+            <Github className="w-10 h-10 md:w-12 md:h-12 text-white" />
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400">
+            RepoLLM
+          </h1>
+
+          {/* CAG Badge (Below Title) */}
+          <CAGBadge />
+
+          <p className="text-base sm:text-lg md:text-xl text-zinc-400 mb-12 max-w-lg mx-auto">
+          Explore any GitHub repository with precision. Get instant code insights, ask targeted questions, and understand entire projects in seconds.
+          </p>
+
+          <form onSubmit={handleSubmit} className="w-full max-w-md relative group">
+            <div className="conic-border-container flex items-center bg-slate-900/80 backdrop-blur-sm p-1 rounded-lg">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="https://github.com/owner/repo or owner/repo"
+                className="flex-1 bg-transparent border-none outline-none text-white px-3 py-2 md:px-4 md:py-3 placeholder-zinc-500 text-sm md:text-base w-full min-w-0"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-white text-black p-2 md:p-3 rounded-md hover:bg-zinc-200 transition-colors disabled:opacity-50 shrink-0"
+              >
+                {loading ? <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin" /> : <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />}
+              </button>
+            </div>
+          </form>
+
+          {error && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-4 text-red-400 text-sm"
+            >
+              {error}
+            </motion.p>
+          )}
+
+          <div className="mt-12 md:mt-16 flex flex-wrap justify-center gap-3 md:gap-4 text-xs md:text-sm text-zinc-500">
+            <span>Try:</span>
+            <button onClick={() => setInput("https://github.com/facebook/react")} className="hover:text-white transition-colors">facebook/react</button>
+            <span className="hidden sm:inline">•</span>
+            <button onClick={() => setInput("https://github.com/microsoft/typescript")} className="hover:text-white transition-colors">microsoft/typescript</button>
+            <span className="hidden sm:inline">•</span>
+            <button onClick={() => setInput("https://github.com/encode/httpx")} className="hover:text-white transition-colors">encode/httpx</button>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* CAG Comparison Section */}
+      <div className="relative z-10">
+        <CAGComparison />
+      </div>
+
+      {/* Feature Tiles Section */}
+      <section className="relative py-20 z-10">
+        <div className="relative z-10">
+          <FeatureTiles />
+        </div>
+      </section>
+
+      <Footer />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "RepoLLM",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Web",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD",
+            },
+            "description": "RepoLLM is an AI-powered tool that allows developers to visualize and chat with GitHub repositories to understand logic and squash bugs.",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "ratingCount": "120",
+            },
+          }),
+        }}
+      />
+    </main>
+  );
+}
