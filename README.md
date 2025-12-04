@@ -16,7 +16,7 @@
 </div>
 
 
-## 🎯 Executive Summary
+##  Executive Summary
 
 RepoLLM is a production-grade AI-powered code analysis platform that enables developers to understand, analyze, and interact with GitHub repositories through natural language. Built on **Context Augmented Generation (CAG)** architecture, RepoLLM provides superior code understanding by loading complete file contexts into large language models, rather than fragmented vector chunks.
 
@@ -396,7 +396,7 @@ graph TD
 
 ---
 
-## 📖 Usage Examples
+##  Usage Examples
 
 ### Analyze Repository Architecture
 
@@ -426,7 +426,7 @@ Ask: "Show me the dependency graph"
 
 ---
 
-## 🔒 Privacy & Security
+##  Privacy & Security
 
 ### Security Measures
 
@@ -506,7 +506,7 @@ Ask: "Show me the dependency graph"
 
 ---
 
-## 📐 Technical Deep Dive
+##  Technical Deep Dive
 
 ### CAG Architecture Implementation
 
