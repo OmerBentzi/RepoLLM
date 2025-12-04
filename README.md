@@ -398,7 +398,114 @@ graph TD
 
 ## 📖 Usage Examples
 
-### Analyze Repository Architecture
+### Real-World Example: Analyzing httpx
+
+Here are example queries for the [httpx](https://github.com/encode/httpx) repository with actual answers and code citations:
+
+#### Example 1: Understanding the Client Class
+
+**Query:** "How does the Client class handle HTTP requests?"
+
+**Answer:**
+The `Client` class in httpx is the core component for making HTTP requests. It manages connection pooling, sessions, and request/response handling.
+
+The main request method is defined in [file:httpx/_client.py:594-1064]:
+
+```python
+class Client(BaseClient):
+    """An HTTP client, with connection pooling, HTTP/2, redirects, cookie persistence, etc."""
+    
+    def request(
+        self,
+        method: str,
+        url: URL | str,
+        *,
+        content: RequestContent | None = None,
+        # ... other parameters
+    ) -> Response:
+        # Request handling logic
+```
+
+The client uses a transport layer (defined in [file:httpx/_transports/base.py]) to manage the actual network connections. For synchronous requests, it uses `HTTPTransport`, while async requests use `AsyncHTTPTransport`.
+
+**Files Analyzed:**
+- `httpx/_client.py` - lines 594-1064
+- `httpx/_transports/base.py` - lines 1-150
+- `httpx/_api.py` - lines 39-121
+
+---
+
+#### Example 2: Authentication Mechanism
+
+**Query:** "How does httpx handle authentication?"
+
+**Answer:**
+httpx supports multiple authentication methods through the `Auth` interface. The authentication is handled in [file:httpx/_auth.py:1-300].
+
+Basic authentication is implemented as:
+
+```python
+class BasicAuth:
+    def __init__(self, username: str, password: str):
+        self.username = username
+        self.password = password
+    
+    def auth_flow(self, request: Request) -> Iterator[Request]:
+        # Authentication flow logic
+```
+
+The auth object is applied to requests in [file:httpx/_client.py:850-900] where it modifies request headers before sending.
+
+**Files Analyzed:**
+- `httpx/_auth.py` - lines 1-300
+- `httpx/_client.py` - lines 850-900
+
+---
+
+#### Example 3: Connection Pooling
+
+**Query:** "How does connection pooling work in httpx?"
+
+**Answer:**
+Connection pooling is managed by the transport layer. The `HTTPTransport` class maintains a pool of connections to reuse across requests, improving performance.
+
+The pool is created in [file:httpx/_transports/default.py:100-200] and managed through the `ConnectionPool` class. Connections are reused when:
+1. The target host and port match
+2. The connection is still alive
+3. The pool hasn't exceeded its size limit
+
+**Files Analyzed:**
+- `httpx/_transports/default.py` - lines 100-200
+- `httpx/_transports/base.py` - lines 50-150
+
+---
+
+#### Example 4: Error Handling
+
+**Query:** "What exceptions can httpx raise and when?"
+
+**Answer:**
+httpx defines several exception types in [file:httpx/_exceptions.py:1-200]:
+
+- `HTTPError`: Base class for all HTTP-related errors
+- `RequestError`: Raised when a request fails (network issues, timeouts)
+- `HTTPStatusError`: Raised for HTTP error status codes (4xx, 5xx)
+- `TimeoutException`: Raised when a request times out
+
+These exceptions are raised at different stages:
+- `RequestError` during connection establishment ([file:httpx/_client.py:1200-1250])
+- `HTTPStatusError` after receiving response with error status ([file:httpx/_client.py:1100-1150])
+- `TimeoutException` when request exceeds timeout ([file:httpx/_client.py:1000-1050])
+
+**Files Analyzed:**
+- `httpx/_exceptions.py` - lines 1-200
+- `httpx/_client.py` - lines 1000-1250
+
+---
+
+### General Usage Examples
+
+#### Analyze Repository Architecture
 
 ```
 Enter: "https://github.com/facebook/react"
@@ -407,7 +514,7 @@ Ask: "How does the reconciliation algorithm work?"
 Ask: "What breaks if I remove the scheduler?"
 ```
 
-### Security Scanning
+#### Security Scanning
 
 ```
 Enter: "your-org/your-repo"
@@ -416,7 +523,7 @@ Review: Vulnerabilities grouped by severity
 Get: Actionable fix recommendations with code references
 ```
 
-### Code Analysis
+#### Code Analysis
 
 ```
 Ask: "Find all async functions in this codebase"
