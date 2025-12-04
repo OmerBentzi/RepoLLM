@@ -5,6 +5,121 @@
 
 </div>
 
+
+## 🚀 Getting Started
+
+### Quick Start with Docker (Recommended)
+
+The easiest way to run RepoLLM is using Docker:
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/OmerBentzi/RepoLLM
+   cd RepoLLM
+   ```
+
+2. **Create environment file**
+   ```bash
+   cp .env.example .env.local
+   ```
+   
+   Edit `.env.local` and add your OpenAI API key:
+   ```env
+   OPENAI_API_KEY="your_openai_api_key"
+   NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+   ```
+
+3. **Run with Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Open the app**
+   
+   Visit [http://localhost:3000](http://localhost:3000)
+
+**That's it!** The app will be running in the background. To stop it:
+```bash
+docker-compose down
+```
+
+**Note**: Cloned repositories are persisted in a Docker volume for data persistence.
+
+### Manual Installation
+
+If you prefer to run without Docker:
+
+#### Prerequisites
+
+- **Node.js** 18+ and npm
+- **Git** (for cloning repositories)
+- **OpenAI API Key** ([Get one here](https://platform.openai.com/api-keys))
+
+#### Installation Steps
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/OmerBentzi/RepoLLM
+   cd RepoLLM
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   ```
+   
+   Edit `.env.local`:
+   ```env
+   # Required
+   OPENAI_API_KEY="your_openai_api_key"
+   
+   # Optional
+   NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+   ```
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open the app**
+   
+   Visit [http://localhost:3000](http://localhost:3000)
+
+### Docker Commands
+
+```bash
+# Build the image
+docker-compose build
+
+# Start the container
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the container
+docker-compose down
+
+# Rebuild and restart
+docker-compose up -d --build
+```
+
+### Windows Users
+
+If you encounter "Filename too long" errors:
+- The app automatically configures git for long paths
+- Some repositories (like React) have paths exceeding Windows' 260-character limit
+- The app will work with a partial clone - missing files are logged but don't break functionality
+- Docker handles this automatically on all platforms
+
+```
+
 ## 🎯 Executive Summary
 
 RepoLLM is a production-grade AI-powered code analysis platform that enables developers to understand, analyze, and interact with GitHub repositories through natural language. Built on **Context Augmented Generation (CAG)** architecture, RepoLLM provides superior code understanding by loading complete file contexts into large language models, rather than fragmented vector chunks.
@@ -268,118 +383,6 @@ graph TD
 - Severity classification
 
 ---
-
-## 🚀 Getting Started
-
-### Quick Start with Docker (Recommended)
-
-The easiest way to run RepoLLM is using Docker:
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/OmerBentzi/RepoLLM
-   cd RepoLLM
-   ```
-
-2. **Create environment file**
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Edit `.env.local` and add your OpenAI API key:
-   ```env
-   OPENAI_API_KEY="your_openai_api_key"
-   NEXT_PUBLIC_BASE_URL="http://localhost:3000"
-   ```
-
-3. **Run with Docker Compose**
-   ```bash
-   docker-compose up -d
-   ```
-
-4. **Open the app**
-   
-   Visit [http://localhost:3000](http://localhost:3000)
-
-**That's it!** The app will be running in the background. To stop it:
-```bash
-docker-compose down
-```
-
-**Note**: Cloned repositories are persisted in a Docker volume for data persistence.
-
-### Manual Installation
-
-If you prefer to run without Docker:
-
-#### Prerequisites
-
-- **Node.js** 18+ and npm
-- **Git** (for cloning repositories)
-- **OpenAI API Key** ([Get one here](https://platform.openai.com/api-keys))
-
-#### Installation Steps
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/OmerBentzi/RepoLLM
-   cd RepoLLM
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Edit `.env.local`:
-   ```env
-   # Required
-   OPENAI_API_KEY="your_openai_api_key"
-   
-   # Optional
-   NEXT_PUBLIC_BASE_URL="http://localhost:3000"
-   ```
-
-4. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open the app**
-   
-   Visit [http://localhost:3000](http://localhost:3000)
-
-### Docker Commands
-
-```bash
-# Build the image
-docker-compose build
-
-# Start the container
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop the container
-docker-compose down
-
-# Rebuild and restart
-docker-compose up -d --build
-```
-
-### Windows Users
-
-If you encounter "Filename too long" errors:
-- The app automatically configures git for long paths
-- Some repositories (like React) have paths exceeding Windows' 260-character limit
-- The app will work with a partial clone - missing files are logged but don't break functionality
-- Docker handles this automatically on all platforms
 
 ---
 
