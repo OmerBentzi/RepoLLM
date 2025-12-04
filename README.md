@@ -10,15 +10,6 @@
 
 </div>
 
-## 📸 Screenshots
-
-### Homepage
-<div align="center">
-
-![RepoLLM Homepage](./docs/images/Demo_1.png)
-
-*Clean, modern interface with gradient background and intuitive repository input*
-
 </div>
 
 ### Chat Interface
