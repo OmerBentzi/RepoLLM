@@ -270,15 +270,6 @@ await cacheQuerySelection(owner, repo, query, selectedFiles);
 
 ---
 
-##  Performance & Cost Analysis
-
-### Token Management
-
-- **Context Window**: 200,000 tokens (GPT-4o-mini)
-- **File Selection**: ~500-2,000 tokens (cached for 24h)
-- **Context Building**: 50,000-150,000 tokens per query
-- **Response Generation**: 1,000-10,000 tokens
-
 
 ##  System Architecture
 
