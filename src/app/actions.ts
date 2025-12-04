@@ -166,9 +166,9 @@ export async function analyzeRepoFiles(
     let relevantFiles: string[];
     try {
         relevantFiles = await enhancedFileSelection(query, prunedTree, owner, repo);
-        console.log('✅ Enhanced file selection:', relevantFiles.length, 'files selected');
+        console.log(' Enhanced file selection:', relevantFiles.length, 'files selected');
     } catch (e) {
-        console.warn('⚠️ Enhanced selection failed, using fallback:', e);
+        console.warn(' Enhanced selection failed, using fallback:', e);
         // Fallback to original method
         relevantFiles = await analyzeFileSelection(query, prunedTree, owner, repo);
     }
@@ -475,13 +475,13 @@ export async function analyzeCodeSnippet(
             
             // If AI found issues, use ONLY AI findings (more accurate)
             if (aiFindings.length > 0) {
-                console.log('✅ Using AI findings only (more accurate than pattern matching)');
+                console.log(' Using AI findings only (more accurate than pattern matching)');
                 const summary = getScanSummary(aiFindings);
                 const grouped = groupBySeverity(aiFindings);
                 return { findings: aiFindings, summary, grouped };
             }
         } catch (aiError) {
-            console.error('❌ AI security analysis failed:', aiError);
+            console.error(' AI security analysis failed:', aiError);
             // Fall through to pattern-based scanning
         }
 
@@ -532,12 +532,12 @@ export async function scanRepositoryVulnerabilities(
                 // Ensure content is a string (skip binary files)
                 if (typeof content === 'string' && content.length > 0) {
                     filesWithContent.push({ path: file.path, content });
-                    console.log('✅ Fetched:', file.path, `(${content.length} bytes)`);
+                    console.log(' Fetched:', file.path, `(${content.length} bytes)`);
                 } else {
-                    console.warn(`⚠️ Skipping ${file.path}: content is not a string or is empty`);
+                    console.warn(` Skipping ${file.path}: content is not a string or is empty`);
                 }
             } catch (e) {
-                console.warn(`❌ Failed to fetch ${file.path} for security scan:`, e);
+                console.warn(` Failed to fetch ${file.path} for security scan:`, e);
             }
         }
 

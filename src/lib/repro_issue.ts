@@ -53,7 +53,7 @@ const repaired = repairMarkdown(fullInput);
 console.log(repaired);
 
 if (repaired === fullInput) {
-  console.log("\n❌ No changes made!");
+  console.log("\n No changes made!");
 } else {
-  console.log("\n✅ Changes made.");
+  console.log("\n Changes made.");
 }

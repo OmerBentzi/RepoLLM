@@ -314,7 +314,7 @@ export function ChatInterface({ repoContext, onToggleSidebar }: ChatInterfacePro
         // SECURITY: Validate and sanitize input
         const safetyCheck = validateInputSafety(input);
         if (!safetyCheck.safe) {
-            console.warn('⚠️ Security warning:', safetyCheck.warnings);
+            console.warn(' Security warning:', safetyCheck.warnings);
             toast.warning("Input contains suspicious patterns", {
                 description: "Your input has been sanitized for security.",
                 duration: 3000,
@@ -382,7 +382,7 @@ export function ChatInterface({ repoContext, onToggleSidebar }: ChatInterfacePro
                 const { analyzeCodeSnippet } = await import("@/app/actions");
                 const { findings, summary } = await analyzeCodeSnippet(sanitizedInput);
                 
-                console.log('✅ Code analysis complete! Findings:', findings.length);
+                console.log(' Code analysis complete! Findings:', findings.length);
                 
                 let content = '';
                 if (summary.total === 0) {
@@ -469,7 +469,7 @@ export function ChatInterface({ repoContext, onToggleSidebar }: ChatInterfacePro
                     filesToScan
                 );
 
-                console.log('✅ Scan complete! Findings:', findings.length, 'Summary:', summary);
+                console.log(' Scan complete! Findings:', findings.length, 'Summary:', summary);
                 console.log('📊 Debug Info:', summary.debug);
 
                 // Step 4: Finalizing
@@ -750,7 +750,7 @@ export function ChatInterface({ repoContext, onToggleSidebar }: ChatInterfacePro
                                         // Check if content has file references that weren't parsed
                                         const testRefs = msg.content.match(/\[file:[^\]]+\]/g);
                                         if (testRefs) {
-                                            console.warn('⚠️ Found unparsed file references:', testRefs);
+                                            console.warn(' Found unparsed file references:', testRefs);
                                         } else {
                                             console.log('ℹ️ No file references found in content');
                                         }

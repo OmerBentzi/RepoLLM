@@ -46,8 +46,8 @@ export function parseFileReferences(content: string): FileReference[] {
         // Found [file: but didn't parse - log for debugging
         const unparsed = content.match(/\[file:[^\]]+\]/g);
         if (unparsed) {
-            console.warn('⚠️ Found file references but couldn\'t parse:', unparsed);
-            console.warn('⚠️ Full matches:', content.match(/(?:`)?\[file:[^\]]+\](?:`)?/g));
+            console.warn(' Found file references but couldn\'t parse:', unparsed);
+            console.warn(' Full matches:', content.match(/(?:`)?\[file:[^\]]+\](?:`)?/g));
         }
     }
 
@@ -85,7 +85,7 @@ export function replaceFileReferencesWithLinks(content: string, repoOwner: strin
         result = result.replace(ref.fullMatch, link);
     }
     
-    console.log('✅ Final result preview:', result.substring(0, 500));
+    console.log(' Final result preview:', result.substring(0, 500));
     
     return result;
 }

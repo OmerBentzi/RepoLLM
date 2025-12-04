@@ -60,9 +60,9 @@ export const Mermaid = ({ chart }: { chart: string }) => {
                         console.log('🔍 Detected JSON content in Mermaid block, converting...');
                         const data = JSON.parse(chart);
                         codeToRender = generateMermaidFromJSON(data);
-                        console.log('✅ Converted JSON to Mermaid:', codeToRender);
+                        console.log(' Converted JSON to Mermaid:', codeToRender);
                     } catch (e) {
-                        console.warn('⚠️ Failed to parse JSON in Mermaid block:', e);
+                        console.warn(' Failed to parse JSON in Mermaid block:', e);
                         // Continue with original content if parsing fails
                     }
                 }
@@ -73,7 +73,7 @@ export const Mermaid = ({ chart }: { chart: string }) => {
                 const validation = validateMermaidSyntax(sanitized);
 
                 if (!validation.valid) {
-                    console.warn('⚠️ Validation warning:', validation.error);
+                    console.warn(' Validation warning:', validation.error);
                 }
 
                 // Try rendering with sanitized code
@@ -83,11 +83,11 @@ export const Mermaid = ({ chart }: { chart: string }) => {
                         setSvg(svg);
                         setError(null);
                         setIsFixing(false);
-                        console.log('✅ Layer 1 successful: Basic sanitization worked');
+                        console.log(' Layer 1 successful: Basic sanitization worked');
                     }
                     return; // Success!
                 } catch (renderError: any) {
-                    console.warn('❌ Layer 1 failed:', renderError.message || 'Render error');
+                    console.warn(' Layer 1 failed:', renderError.message || 'Render error');
 
                     // PROACTIVE AI FIXING (Layer 2 Auto-Trigger)
                     // If this is the first failure, try to auto-fix immediately
@@ -106,7 +106,7 @@ export const Mermaid = ({ chart }: { chart: string }) => {
                             if (response.ok) {
                                 const { fixed } = await response.json();
                                 if (fixed) {
-                                    console.log('✅ AI Fix received, retrying render...');
+                                    console.log(' AI Fix received, retrying render...');
                                     // Recursive call with fixed code, but increment retry count to avoid infinite loop
                                     // We update the chart ref implicitly by passing the fixed code to mermaid.render
                                     // But since we need to re-run the whole flow, let's just try rendering the fixed code directly here
@@ -115,13 +115,13 @@ export const Mermaid = ({ chart }: { chart: string }) => {
                                         setSvg(svg);
                                         setError(null);
                                         setIsFixing(false);
-                                        console.log('✅ Layer 2 successful: Auto-fix worked');
+                                        console.log(' Layer 2 successful: Auto-fix worked');
                                     }
                                     return;
                                 }
                             }
                         } catch (aiError) {
-                            console.warn('⚠️ Auto-fix failed:', aiError);
+                            console.warn(' Auto-fix failed:', aiError);
                         }
                     }
 
@@ -175,7 +175,7 @@ export const Mermaid = ({ chart }: { chart: string }) => {
                     const { svg } = await mermaid.render(id + '-manualfixed', fixed);
                     setSvg(svg);
                     setError(null);
-                    console.log('✅ Layer 3 successful: Manual AI fix worked');
+                    console.log(' Layer 3 successful: Manual AI fix worked');
                     return;
                 }
             }

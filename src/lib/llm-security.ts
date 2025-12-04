@@ -261,7 +261,7 @@ REMEMBER: Function calls ONLY. No text. No explanations. No summaries. Empty too
 
         // CRITICAL: If model returned text instead of function calls, this is a FAILURE
         if (response?.content && response.content.trim() && !functionCalls.length) {
-            console.error('❌ CRITICAL FAILURE: Model returned TEXT instead of function call!');
+            console.error(' CRITICAL FAILURE: Model returned TEXT instead of function call!');
             console.error('Response content:', response.content.substring(0, 500));
             console.error('This violates the function calling requirement.');
             console.error('Rejecting text response - only function calls are accepted.');
@@ -269,7 +269,7 @@ REMEMBER: Function calls ONLY. No text. No explanations. No summaries. Empty too
             
             // RETRY with even stricter instructions
             try {
-                const retryPrompt = prompt + '\n\n⚠️ REMINDER: You MUST call a function. Text is FORBIDDEN. If you write text, your response will be rejected.';
+                const retryPrompt = prompt + '\n\n REMINDER: You MUST call a function. Text is FORBIDDEN. If you write text, your response will be rejected.';
                 const retryResult = await client.chat.completions.create({
                     model: "gpt-4o-mini",
                     messages: [
@@ -309,7 +309,7 @@ REMEMBER: Function calls ONLY. No text. No explanations. No summaries. Empty too
                 const retryCalls = retryResponse?.tool_calls || [];
                 
                 if (retryCalls.length > 0) {
-                    console.log('✅ Retry successful - got function calls');
+                    console.log(' Retry successful - got function calls');
                     // Process retry calls through the same mapping logic
                     const retryFindings = retryCalls
                         .map((call: any): SecurityFinding | null => {
@@ -366,11 +366,11 @@ REMEMBER: Function calls ONLY. No text. No explanations. No summaries. Empty too
                         .filter((f): f is SecurityFinding => f !== null && validateFinding(f, files));
                     
                     if (retryFindings.length > 0) {
-                        console.log(`✅ Retry found ${retryFindings.length} validated findings`);
+                        console.log(` Retry found ${retryFindings.length} validated findings`);
                         return retryFindings;
                     }
                 } else if (retryResponse?.content && retryResponse.content.trim()) {
-                    console.error('❌ Retry also failed - model still returning text');
+                    console.error(' Retry also failed - model still returning text');
                 }
             } catch (retryError) {
                 console.error('Retry failed:', retryError);
@@ -386,7 +386,7 @@ REMEMBER: Function calls ONLY. No text. No explanations. No summaries. Empty too
             return [];
         }
 
-        console.log(`✅ AI returned ${functionCalls.length} function call(s) - this is correct!`);
+        console.log(` AI returned ${functionCalls.length} function call(s) - this is correct!`);
 
         const findings: SecurityFinding[] = functionCalls
             .map((call: any): SecurityFinding | null => {
@@ -479,7 +479,7 @@ function validateFinding(
     const sanitizedFindingPath = sanitizeFilePath(finding.file);
     const file = files.find(f => sanitizeFilePath(f.path) === sanitizedFindingPath);
     if (!file) {
-        console.warn(`⚠️ File not found for validation: ${finding.file}`);
+        console.warn(` File not found for validation: ${finding.file}`);
         return false;
     }
 
@@ -492,7 +492,7 @@ function validateFinding(
     ];
     
     if (promptInjectionPatterns.some(pattern => pattern.test(finding.description))) {
-        console.warn(`⚠️ Potential prompt injection detected in finding, rejecting: ${finding.title}`);
+        console.warn(` Potential prompt injection detected in finding, rejecting: ${finding.title}`);
         return false;
     }
 

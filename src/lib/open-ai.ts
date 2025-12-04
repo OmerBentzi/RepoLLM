@@ -54,7 +54,7 @@ export async function analyzeFileSelection(
   const safetyCheck = validateInputSafety(question);
   
   if (!safetyCheck.safe) {
-    console.warn('⚠️ Security warning in file selection:', safetyCheck.warnings);
+    console.warn(' Security warning in file selection:', safetyCheck.warnings);
   }
 
   // 1. SMART BYPASS: Check if the user explicitly mentioned a file
@@ -143,7 +143,7 @@ export async function answerWithContext(
   const safetyCheck = validateInputSafety(question);
   
   if (!safetyCheck.safe) {
-    console.warn('⚠️ Security warning - suspicious input detected:', safetyCheck.warnings);
+    console.warn(' Security warning - suspicious input detected:', safetyCheck.warnings);
     // Log but continue - sanitization should handle it
   }
 
@@ -174,7 +174,7 @@ export async function answerWithContext(
   // If total exceeds limit, truncate context
   if (totalTokens > MAX_TOTAL_TOKENS) {
     const availableContextTokens = MAX_TOTAL_TOKENS - questionTokens - historyTokens - estimatedSystemPromptTokens - 5000; // 5K safety buffer
-    console.warn(`⚠️ Context too large (${contextTokens} tokens). Truncating to ${availableContextTokens} tokens.`);
+    console.warn(` Context too large (${contextTokens} tokens). Truncating to ${availableContextTokens} tokens.`);
     
     // Truncate context by removing files from the end
     if (availableContextTokens > 0) {
@@ -695,7 +695,7 @@ export async function* answerWithContextStream(
   const safetyCheck = validateInputSafety(question);
   
   if (!safetyCheck.safe) {
-    console.warn('⚠️ Security warning - suspicious input detected:', safetyCheck.warnings);
+    console.warn(' Security warning - suspicious input detected:', safetyCheck.warnings);
   }
 
   // Sanitize history messages
@@ -723,7 +723,7 @@ export async function* answerWithContextStream(
   // If total exceeds limit, truncate context
   if (totalTokens > MAX_TOTAL_TOKENS) {
     const availableContextTokens = MAX_TOTAL_TOKENS - questionTokens - historyTokens - estimatedSystemPromptTokens - 5000;
-    console.warn(`⚠️ Context too large (${contextTokens} tokens). Truncating to ${availableContextTokens} tokens.`);
+    console.warn(` Context too large (${contextTokens} tokens). Truncating to ${availableContextTokens} tokens.`);
     
     if (availableContextTokens > 0) {
       const contextLines = context.split('\n');

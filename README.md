@@ -167,10 +167,10 @@ User Query → Semantic Search → Retrieve Top-K Chunks → LLM Response
 - **Scalability**: Handles very large codebases through chunking
 
 **Trade-offs:**
-- ❌ **Loss of Context**: Function boundaries, imports, and relationships are broken
-- ❌ **False Positives**: Similarity search may retrieve irrelevant chunks
-- ❌ **No Cross-File Understanding**: Cannot understand relationships across files
-- ❌ **Cold Start**: Every query requires full vector search
+-  **Loss of Context**: Function boundaries, imports, and relationships are broken
+-  **False Positives**: Similarity search may retrieve irrelevant chunks
+-  **No Cross-File Understanding**: Cannot understand relationships across files
+-  **Cold Start**: Every query requires full vector search
 
 #### RepoLLM's CAG Architecture
 
@@ -190,11 +190,11 @@ User Query → Query Classification → Enhanced File Selection → Dependency G
 - **Semantic Coherence**: Maintains code structure, comments, and relationships
 
 **Trade-offs:**
-- ✅ **Superior Understanding**: Full context enables accurate architectural analysis
-- ✅ **Cross-File Reasoning**: Understands relationships between modules
-- ✅ **Precise References**: Line-number citations with exact code locations
-- ⚠️ **Token Cost**: Higher token usage (mitigated by intelligent selection)
-- ⚠️ **Selection Overhead**: AI call required for file selection (cached for 24h)
+-  **Superior Understanding**: Full context enables accurate architectural analysis
+-  **Cross-File Reasoning**: Understands relationships between modules
+-  **Precise References**: Line-number citations with exact code locations
+-  **Token Cost**: Higher token usage (mitigated by intelligent selection)
+-  **Selection Overhead**: AI call required for file selection (cached for 24h)
 
 ### When to Use CAG vs RAG
 
@@ -613,41 +613,41 @@ Ask: "Show me the dependency graph"
 ### Security Measures
 
 #### Input Protection
-- ✅ **Prompt Injection Prevention**: Comprehensive sanitization of user input before AI processing
+-  **Prompt Injection Prevention**: Comprehensive sanitization of user input before AI processing
   - Removes instruction override patterns ("ignore all rules", "forget instructions")
   - Filters role manipulation attempts
   - Validates input safety with pattern detection
   - Limits input length to prevent token exhaustion attacks
-- ✅ **Path Traversal Protection**: Strict file path sanitization
+-  **Path Traversal Protection**: Strict file path sanitization
   - Removes `..` sequences
   - Validates path boundaries
   - Sanitizes repository identifiers
-- ✅ **Input Validation**: URL parsing and path sanitization with comprehensive checks
+-  **Input Validation**: URL parsing and path sanitization with comprehensive checks
 
 #### XSS Prevention
-- ✅ **Markdown Sanitization**: Removes script tags, iframes, and event handlers from markdown content
-- ✅ **SVG Sanitization**: Strips dangerous elements and scripts from SVG content
-- ✅ **Mermaid Security**: Strict security level with additional sanitization layer
-- ✅ **HTML Escaping**: All user-generated content properly escaped before rendering
+-  **Markdown Sanitization**: Removes script tags, iframes, and event handlers from markdown content
+-  **SVG Sanitization**: Strips dangerous elements and scripts from SVG content
+-  **Mermaid Security**: Strict security level with additional sanitization layer
+-  **HTML Escaping**: All user-generated content properly escaped before rendering
 
 #### AI Security
-- ✅ **Function Calling Enforcement**: Security scanner uses OpenAI function calling exclusively
+-  **Function Calling Enforcement**: Security scanner uses OpenAI function calling exclusively
   - Rejects text responses, only accepts structured function calls
   - Prevents AI from generating free-form vulnerability reports
   - Retry logic with stricter instructions if model attempts text output
-- ✅ **Prompt Injection Protection**: AI prompts include explicit instructions to ignore injection attempts
+-  **Prompt Injection Protection**: AI prompts include explicit instructions to ignore injection attempts
   - Detects and rejects prompt injection patterns in code analysis
   - Validates AI responses for injection attempts
-- ✅ **False Positive Prevention**: Enhanced validation prevents false alarms
+-  **False Positive Prevention**: Enhanced validation prevents false alarms
   - Checks for actual library imports before flagging vulnerabilities
   - Validates RegExp.exec() vs command injection
   - Verifies database library presence for SQL injection reports
 
 #### Infrastructure Security
-- ✅ **No GitHub Token Required**: Uses git clone, no API authentication
-- ✅ **Server-Side Processing**: AI analysis happens server-side
-- ✅ **Environment Variables**: API keys never exposed to client
-- ✅ **Local Processing**: Repositories cloned locally, no external data transmission
+-  **No GitHub Token Required**: Uses git clone, no API authentication
+-  **Server-Side Processing**: AI analysis happens server-side
+-  **Environment Variables**: API keys never exposed to client
+-  **Local Processing**: Repositories cloned locally, no external data transmission
 
 ### Privacy Guarantees
 

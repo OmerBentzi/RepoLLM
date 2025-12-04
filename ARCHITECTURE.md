@@ -249,14 +249,14 @@ const index = buildContextIndex(context);
 
 | Metric | RAG | CAG | Winner |
 |--------|-----|-----|--------|
-| **Context Coherence** | Fragmented | Complete | ✅ CAG |
-| **Cross-File Understanding** | Limited | Full | ✅ CAG |
-| **Token Efficiency** | High (small chunks) | Lower (full files) | ✅ RAG |
-| **Selection Accuracy** | Similarity-based | Intent-based | ✅ CAG |
-| **Scalability** | Excellent (vector DB) | Good (caching) | ✅ RAG |
-| **Cost per Query** | $0.001-0.005 | $0.01-0.03 | ✅ RAG |
-| **Answer Quality** | Good (for docs) | Excellent (for code) | ✅ CAG |
-| **Architecture Analysis** | Poor | Excellent | ✅ CAG |
+| **Context Coherence** | Fragmented | Complete |  CAG |
+| **Cross-File Understanding** | Limited | Full |  CAG |
+| **Token Efficiency** | High (small chunks) | Lower (full files) |  RAG |
+| **Selection Accuracy** | Similarity-based | Intent-based |  CAG |
+| **Scalability** | Excellent (vector DB) | Good (caching) |  RAG |
+| **Cost per Query** | $0.001-0.005 | $0.01-0.03 |  RAG |
+| **Answer Quality** | Good (for docs) | Excellent (for code) |  CAG |
+| **Architecture Analysis** | Poor | Excellent |  CAG |
 
 ### When to Use Each Approach
 
@@ -318,16 +318,16 @@ const index = buildContextIndex(context);
 #### Trade-offs
 
 **Advantages:**
-- ✅ No GitHub API rate limits
-- ✅ Works offline after clone
-- ✅ Fast local access
-- ✅ No authentication required
+-  No GitHub API rate limits
+-  Works offline after clone
+-  Fast local access
+-  No authentication required
 
 **Disadvantages:**
-- ⚠️ Disk space usage (repos accumulate)
-- ⚠️ Windows path length limitations
-- ⚠️ No cleanup mechanism
-- ⚠️ Single-server limitation
+-  Disk space usage (repos accumulate)
+-  Windows path length limitations
+-  No cleanup mechanism
+-  Single-server limitation
 
 ### 2. Intelligent File Selection (`file-selection-enhanced.ts`)
 
@@ -481,13 +481,13 @@ cacheRepoMetadata(owner, repo, data);
 #### Trade-offs
 
 **Advantages:**
-- ✅ Comprehensive protection against common attacks
-- ✅ Fast (pattern-based, no external calls)
-- ✅ Zero dependencies
+-  Comprehensive protection against common attacks
+-  Fast (pattern-based, no external calls)
+-  Zero dependencies
 
 **Limitations:**
-- ⚠️ Pattern-based (may miss novel attack vectors)
-- ⚠️ No machine learning detection
+-  Pattern-based (may miss novel attack vectors)
+-  No machine learning detection
 
 ### 6. AI Security Analysis (`llm-security.ts`)
 
@@ -545,13 +545,13 @@ cacheRepoMetadata(owner, repo, data);
 #### Trade-offs
 
 **Advantages:**
-- ✅ Structured output (function calls only)
-- ✅ Low false positive rate
-- ✅ Context-aware vulnerability detection
+-  Structured output (function calls only)
+-  Low false positive rate
+-  Context-aware vulnerability detection
 
 **Limitations:**
-- ⚠️ Requires AI call (2-5s, $0.01-0.03 per scan)
-- ⚠️ Model may occasionally ignore instructions (retry logic handles this)
+-  Requires AI call (2-5s, $0.01-0.03 per scan)
+-  Model may occasionally ignore instructions (retry logic handles this)
 
 ### 7. OpenAI Integration (`open-ai.ts`)
 
@@ -695,7 +695,7 @@ UI Display: Shows token usage with warnings
 |-----------|------|----------------------|
 | Repository Clone | 10-60s | Background jobs, incremental updates |
 | File Tree Building | 100ms-1s | Caching (15min TTL) |
-| File Selection (Cached) | <10ms | ✅ Optimized |
+| File Selection (Cached) | <10ms |  Optimized |
 | File Selection (AI) | 2-5s | Query caching (24h TTL) |
 | File Reading (Sequential) | 100ms/file | → Parallel: 20ms/file |
 | Context Building | 1-3s | Token counting optimization |
@@ -767,7 +767,7 @@ const contents = await Promise.all(
 
 2. **AI File Selection** (Uncached)
    - **Impact**: Medium (2-5s per query)
-   - **Solution**: Query caching (✅ implemented)
+   - **Solution**: Query caching ( implemented)
    - **Effort**: Done
 
 3. **Repository Cloning** (Synchronous)
@@ -805,99 +805,12 @@ const contents = await Promise.all(
 
 ---
 
-## Cost Analysis & Economics
-
-### Cost Structure (Per Query)
-
-#### Component Breakdown
-
-| Component | Tokens | Cost (GPT-4o-mini) | Cached? | Notes |
-|-----------|--------|-------------------|---------|-------|
-| **File Selection** | 500-2K | $0.0001-0.0004 | ✅ 24h | One-time per query |
-| **Context Building** | 50K-150K | $0.01-0.03 | ✅ 1h | SHA-based invalidation |
-| **Response Generation** | 1K-10K | $0.0002-0.002 | ❌ | Per query |
-| **Total (First Query)** | ~51K-162K | **$0.01-0.03** | | |
-| **Total (Cached Selection)** | ~51K-160K | **$0.01-0.03** | | Selection cached |
-
-#### Cost Optimization
-
-**Query Caching Impact:**
-- **Without caching**: 100 queries × $0.02 = $2.00
-- **With 70% cache hit**: 30 queries × $0.02 + 70 queries × $0.01 = $1.30
-- **Savings**: 35% reduction
-
-**File Content Caching Impact:**
-- **Without caching**: 30 files × 100ms = 3s + API costs
-- **With caching**: 30 files × 10ms = 0.3s (SHA-based)
-- **Savings**: 90% faster, reduces redundant I/O
-
-### Scaling Economics
-
-#### Single User (100 queries/month)
-
-**Cost Breakdown:**
-- First-time queries: 30 queries × $0.02 = $0.60
-- Cached queries: 70 queries × $0.01 = $0.70
-- **Total: $1.30/month**
-
-**Infrastructure:**
-- Hosting (Vercel): $0 (Hobby) or $20 (Pro)
-- Storage: $0 (local filesystem)
-- **Total: $0-20/month**
-
-#### 100 Users (10,000 queries/month)
-
-**Cost Breakdown:**
-- With 70% cache hit rate: **$300-500/month**
-- Without caching: **$1,000-3,000/month**
-- **Cache ROI: 60-80% cost reduction**
-
-**Infrastructure:**
-- Hosting: $200-500/month (multiple instances)
-- Storage: $50-100/month (S3 for repos)
-- Database: $50-100/month (PostgreSQL)
-- Cache: $30-50/month (Redis)
-- **Total: $630-1,150/month**
-
-#### 1,000 Users (100,000 queries/month)
-
-**Cost Breakdown:**
-- With 70% cache hit: **$3,000-5,000/month**
-- Infrastructure: **$2,000-3,000/month**
-- **Total: $5,000-8,000/month**
-
-**Per-User Cost**: $5-8/month
-
-### Cost Optimization Strategies
-
-1. **Query Caching** (✅ Implemented)
-   - 60-80% cost reduction
-   - 24h TTL balances freshness vs. cost
-
-2. **File Content Caching** (✅ Implemented)
-   - SHA-based invalidation
-   - 1h TTL for frequently accessed files
-
-3. **Intelligent File Selection** (✅ Implemented)
-   - Minimizes files loaded (typically 5-30 files)
-   - Reduces context size by 50-70%
-
-4. **Model Selection** (✅ GPT-4o-mini)
-   - 10x cheaper than GPT-4
-   - Sufficient quality for code analysis
-
-5. **Future: Tiered Model Selection**
-   - Simple queries → GPT-4o-mini ($0.01)
-   - Complex queries → GPT-4 ($0.10)
-   - **Potential savings**: 30-50% for simple queries
-
----
 
 ## Security Architecture
 
 ### Current Security Measures
 
-#### ✅ Implemented
+####  Implemented
 
 1. **Prompt Injection Prevention** (`src/lib/security-utils.ts`)
    - **`sanitizeUserInput()`**: Removes instruction override patterns
@@ -967,7 +880,7 @@ const contents = await Promise.all(
    - No external data transmission
    - Repositories isolated in `.repos/` directory
 
-#### ⚠️ Gaps & Recommendations
+####  Gaps & Recommendations
 
 1. **Rate Limiting** (Critical)
    - **Current**: None
@@ -976,27 +889,27 @@ const contents = await Promise.all(
    - **Status**: Not implemented, high priority
 
 2. **Path Traversal Protection** (High)
-   - **Current**: ✅ Comprehensive sanitization via `sanitizeFilePath()`
+   - **Current**:  Comprehensive sanitization via `sanitizeFilePath()`
    - **Implementation**: Removes `..`, normalizes paths, length limits
-   - **Status**: ✅ Implemented
+   - **Status**:  Implemented
 
 3. **Input Sanitization** (Medium)
-   - **Current**: ✅ Comprehensive sanitization library (`security-utils.ts`)
+   - **Current**:  Comprehensive sanitization library (`security-utils.ts`)
    - **Implementation**: 
      - Prompt injection prevention
      - XSS prevention (markdown, SVG, HTML)
      - Path sanitization
      - Input validation
-   - **Status**: ✅ Implemented
+   - **Status**:  Implemented
 
 4. **AI Security** (High)
-   - **Current**: ✅ Function calling enforcement, prompt injection protection
+   - **Current**:  Function calling enforcement, prompt injection protection
    - **Implementation**:
      - Strict function calling requirements
      - Retry logic for text rejection
      - False positive validation
      - Response sanitization
-   - **Status**: ✅ Implemented
+   - **Status**:  Implemented
 
 5. **Authentication** (Medium - if multi-user)
    - **Current**: None
@@ -1049,7 +962,7 @@ const contents = await Promise.all(
 
 ## Production Readiness Assessment
 
-### ✅ Production Ready
+###  Production Ready
 
 1. **Error Handling**
    - Comprehensive try-catch blocks
@@ -1072,7 +985,7 @@ const contents = await Promise.all(
 - Separation of concerns
 - Clean component structure
 
-### ⚠️ Needs Improvement (Before Production)
+###  Needs Improvement (Before Production)
 
 #### Critical (Must Have)
 
@@ -1151,10 +1064,10 @@ const contents = await Promise.all(
 - Superior answer quality justifies 3-10x cost increase
 
 **Trade-offs**:
-- ✅ Better code understanding
-- ✅ Accurate architectural analysis
-- ⚠️ Higher token costs
-- ⚠️ Slower for very large codebases
+-  Better code understanding
+-  Accurate architectural analysis
+-  Higher token costs
+-  Slower for very large codebases
 
 **Alternative Considered**: Hybrid approach (RAG for search, CAG for analysis)
 - **Rejected**: Adds complexity, CAG quality is worth the cost
@@ -1170,11 +1083,11 @@ const contents = await Promise.all(
 - Faster access (local filesystem)
 
 **Trade-offs**:
-- ✅ No rate limits
-- ✅ Offline capability
-- ⚠️ Disk space usage
-- ⚠️ Windows path length limitations
-- ⚠️ No cleanup mechanism
+-  No rate limits
+-  Offline capability
+-  Disk space usage
+-  Windows path length limitations
+-  No cleanup mechanism
 
 **Alternative Considered**: GitHub API with caching
 - **Rejected**: Rate limits are too restrictive, adds complexity
@@ -1190,10 +1103,10 @@ const contents = await Promise.all(
 - Good enough for MVP
 
 **Trade-offs**:
-- ✅ Simple, fast
-- ✅ No infrastructure needed
-- ⚠️ Lost on restart
-- ⚠️ Single-server only
+-  Simple, fast
+-  No infrastructure needed
+-  Lost on restart
+-  Single-server only
 
 **Future**: Migrate to Redis for production
 - **When**: Before scaling beyond single server
@@ -1209,9 +1122,9 @@ const contents = await Promise.all(
 - Good enough accuracy for most queries
 
 **Trade-offs**:
-- ✅ Fast and cheap
-- ⚠️ Less accurate than embeddings
-- ⚠️ May miss semantically related files
+-  Fast and cheap
+-  Less accurate than embeddings
+-  May miss semantically related files
 
 **Future**: Add embedding-based selection for complex queries
 - **When**: If accuracy becomes an issue
@@ -1227,10 +1140,10 @@ const contents = await Promise.all(
 - Faster response times
 
 **Trade-offs**:
-- ✅ 10x cost reduction
-- ✅ Faster responses
-- ⚠️ Slightly lower quality than GPT-4
-- ⚠️ May struggle with very complex queries
+-  10x cost reduction
+-  Faster responses
+-  Slightly lower quality than GPT-4
+-  May struggle with very complex queries
 
 **Future**: Tiered model selection
 - Simple queries → GPT-4o-mini
@@ -1341,10 +1254,10 @@ User → Next.js App → Redis (Cache) → Local FS → OpenAI
 
 ### Current State
 
-- ❌ No error tracking
-- ❌ No performance monitoring
-- ❌ No analytics
-- ✅ Console logging (basic)
+-  No error tracking
+-  No performance monitoring
+-  No analytics
+-  Console logging (basic)
 
 ### Recommended Stack
 
@@ -1538,15 +1451,15 @@ RepoLLM is a well-architected platform with a solid foundation. The CAG approach
 
 ### Production Readiness
 
-**Current State**: ✅ MVP Ready
+**Current State**:  MVP Ready
 - Works well for single-user or small team
 - Needs hardening for public production
 
-**After Phase 1 Improvements**: ✅ Production Ready
+**After Phase 1 Improvements**:  Production Ready
 - Can handle 100-500 concurrent users
 - Suitable for public deployment
 
-**After Phase 2 Scaling**: ✅ Enterprise Ready
+**After Phase 2 Scaling**:  Enterprise Ready
 - Can handle 5,000+ concurrent users
 - Suitable for large-scale deployment
 
