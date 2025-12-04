@@ -8,7 +8,6 @@
 
 > **Stop reading code. Start talking to it.** 🚀
 
-</div>
 
 </div>
 
