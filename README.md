@@ -6,7 +6,7 @@
 </div>
 
 
-## 🎯 Executive Summary
+##  Executive Summary
 
 RepoLLM is a production-grade AI-powered code analysis platform that enables developers to understand, analyze, and interact with GitHub repositories through natural language. Built on **Context Augmented Generation (CAG)** architecture, RepoLLM provides superior code understanding by loading complete file contexts into large language models, rather than fragmented vector chunks.
 
@@ -20,7 +20,7 @@ RepoLLM is a production-grade AI-powered code analysis platform that enables dev
 ---
 
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Quick Start with Docker (Recommended)
 
@@ -135,7 +135,7 @@ If you encounter "Filename too long" errors:
 ---
 
 
-## 🏗️ Architecture: CAG vs RAG
+##  Architecture: CAG vs RAG
 
 ### The Fundamental Difference
 
@@ -260,7 +260,7 @@ await cacheQuerySelection(owner, repo, query, selectedFiles);
 
 ---
 
-## 📊 Performance & Cost Analysis
+##  Performance & Cost Analysis
 
 ### Token Management
 
@@ -303,7 +303,7 @@ await cacheQuerySelection(owner, repo, query, selectedFiles);
 
 ---
 
-## 🔄 System Architecture
+##  System Architecture
 
 ### High-Level Flow
 
@@ -466,38 +466,32 @@ Ask: "Show me the dependency graph"
 
 ---
 
-## 🎯 Key Features
+##  Key Features
 
-### 🧠 Context-Aware Engine
+###  Context-Aware Engine
 
 - **Smart File Selection**: AI analyzes query intent and selects minimal relevant files
 - **Dependency Awareness**: Considers import relationships and file dependencies
 - **Noise Filtering**: Automatically ignores `node_modules`, lockfiles, build artifacts
 - **Multi-File Understanding**: Traces dependencies across files
 
-### 📈 Visual Architecture Maps
+###  Visual Architecture Maps
 
 - **Auto-Generated Diagrams**: Complex code logic → Mermaid flowcharts
 - **Interactive Exploration**: Zoom, pan, and navigate large diagrams
 - **Export Options**: Save diagrams as images
 
-### 🛡️ Zero-Config Security Audits
+###  Zero-Config Security Audits
 
 - **Vulnerability Detection**: SQL injection, XSS, auth flaws, exposed secrets
 - **AI-Powered Triage**: Context-aware explanations of vulnerabilities
 - **Fix Recommendations**: Copy-pasteable code patches
 
-### 📱 Mobile-First Experience
+###  Mobile-First Experience
 
 - **Responsive Design**: Optimized for mobile browsers
 - **Touch-Friendly**: Swipe, tap, zoom through codebases
 - **Progressive Enhancement**: Works on any device
-
-### 🔍 Semantic Code Search
-
-- **Natural Language**: "Find where user authentication happens"
-- **Regex & AST Search**: Power-user structural matching
-- **Instant Navigation**: Jump to relevant lines
 
 
 ---
@@ -571,7 +565,7 @@ Ask: "Show me the dependency graph"
 
 ---
 
-## 🔧 Production Considerations
+##  Production Considerations
 
 ### Current Limitations
 
