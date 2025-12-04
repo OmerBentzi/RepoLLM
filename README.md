@@ -365,31 +365,45 @@ Here are example queries for the [httpx](https://github.com/encode/httpx) reposi
 **Query:** "How does the Client class handle HTTP requests?"
 
 **Answer:**
-The `Client` class in httpx is the core component for making HTTP requests. It manages connection pooling, sessions, and request/response handling.
 
-The main request method is defined in [file:httpx/_client.py:594-1064]:
+The Client class in httpx manages HTTP requests through several interconnected components and methods. Below is a breakdown of its architecture and workflow, strictly adhering to the code from the repository.
 
-```python
-class Client(BaseClient):
-    """An HTTP client, with connection pooling, HTTP/2, redirects, cookie persistence, etc."""
-    
-    def request(
-        self,
-        method: str,
-        url: URL | str,
-        *,
-        content: RequestContent | None = None,
-        # ... other parameters
-    ) -> Response:
-        # Request handling logic
-```
+**High-Level Architecture**
 
-The client uses a transport layer (defined in [file:httpx/_transports/base.py]) to manage the actual network connections. For synchronous requests, it uses `HTTPTransport`, while async requests use `AsyncHTTPTransport`.
+**Layered Structure:**
+- **Transport Layer**: Encapsulated in `BaseTransport` and its subclasses (`HTTPTransport` and `AsyncHTTPTransport`) which handle the actual sending of requests and receiving of responses. This is where low-level HTTP interaction occurs. [file:httpx/_transports/base.py:14-35]
+- **Client Layer**: The `Client` class itself which manages configuration (like headers, authentication) and implements the logic for making requests. [file:httpx/_client.py:594-600]
+
+**Components Responsible:**
+- Client is responsible for building requests, handling session state, and managing configuration.
+- The transport layer is responsible for executing those requests and interacting with the network.
+
+**Lifecycle Explanation**
+
+1. **Request Creation**: When a request is initiated using methods like `get`, `post`, etc., it begins by calling the `request` method. [file:httpx/_client.py:771-796] The parameters provided are merged with the default values set in the Client instance. This is done through the `build_request` method. [file:httpx/_client.py:340-389]
+
+2. **Handling Request**: After building the request, it is sent to the transport layer via the `send` method. Here, the request is sent without modification and may utilize a `MockTransport` for tests or the actual `HTTPTransport`. [file:httpx/_client.py:879-924]
+
+3. **Transport Communication**: Under the hood, the transport layer (`HTTPTransport` or `AsyncHTTPTransport`) interacts with the network. The `handle_request` method dispatches the actual HTTP request. [file:httpx/_transports/base.py:26-40]
+
+4. **Response Handling**: The response is returned and can be sanitized and wrapped in a `Response` object, which provides methods to handle data (like JSON parsing). The content can be extracted using methods like `.iter_bytes()`, `.read()`, or `.json()` based on user needs. [file:httpx/_models.py:516-640]
+
+**Component Interactions**
+
+- `request` calls `build_request`, which then invokes `send`. This flow continuously iterates through methods in the Client class leveraging the transport layer for handling the low-level details of HTTP communication.
+- The transport for the URL is determined based on configured mounts or defaults. [file:httpx/_transports/base.py:234-259]
+- Internal states within the Client such as the authentication and sessions are handled through properties, ensuring that each request can maintain proper context of session and associated configurations. [file:httpx/_client.py:189-220]
+
+**Edge Cases & Pitfalls**
+
+- **Error Handling**: The Client class includes error handling mechanisms via exceptions like `RequestError` and `HTTPStatusError`. Decisions based on response status codes can raise exceptions for 4xx and 5xx codes, ensuring that users manage errors appropriately. [file:httpx/_exceptions.py:74-268]
+- **Streaming vs Non-Streaming**: Differentiate between streaming and non-streaming operations; entities in response can be accessed in various ways which can lead to errors if not managed correctly, such as attempting to read the content after it has been consumed. [file:httpx/_models.py:940-966]
 
 **Files Analyzed:**
-- `httpx/_client.py` - lines 594-1064
-- `httpx/_transports/base.py` - lines 1-150
-- `httpx/_api.py` - lines 39-121
+- `httpx/_client.py` - lines 189-220, 340-389, 594-600, 771-796, 879-924
+- `httpx/_transports/base.py` - lines 14-35, 26-40, 234-259
+- `httpx/_models.py` - lines 516-640, 940-966
+- `httpx/_exceptions.py` - lines 74-268
 
 ---
 
@@ -398,25 +412,43 @@ The client uses a transport layer (defined in [file:httpx/_transports/base.py]) 
 **Query:** "How does httpx handle authentication?"
 
 **Answer:**
-httpx supports multiple authentication methods through the `Auth` interface. The authentication is handled in [file:httpx/_auth.py:1-300].
 
-Basic authentication is implemented as:
+HTTPX handles authentication through a series of classes and mechanisms that encapsulate different authentication schemes. The primary structure supporting authentication is based on the `Auth` class and its various subclasses.
 
-```python
-class BasicAuth:
-    def __init__(self, username: str, password: str):
-        self.username = username
-        self.password = password
-    
-    def auth_flow(self, request: Request) -> Iterator[Request]:
-        # Authentication flow logic
-```
+**High-Level Architecture**
 
-The auth object is applied to requests in [file:httpx/_client.py:850-900] where it modifies request headers before sending.
+**Core Classes:**
+- **Auth**: The base class for all authentication schemes. It defines a common interface and the basic functionality for handling authentication flows. [file:httpx/_auth.py:22-32]
+- **BasicAuth, DigestAuth, NetRCAuth**: Subclasses of `Auth` that implement specific authentication protocols.
+  - `BasicAuth` handles HTTP Basic Authentication. [file:httpx/_auth.py:126-142]
+  - `DigestAuth` implements HTTP Digest Authentication. [file:httpx/_auth.py:175-327]
+  - `NetRCAuth` uses credentials from a `.netrc` file for authentication. [file:httpx/_auth.py:145-165]
+
+**Lifecycle Explanation**
+
+1. **Authentication Flow**: Each authentication class implements the `auth_flow` method that defines how authentication is applied to a request. For example, in `BasicAuth`, the `auth_flow` method adds the `Authorization` header to the request. [file:httpx/_auth.py:135-137]
+
+2. **Client Configuration**: When initializing a `Client`, the `auth` parameter can be set to an instance of any authentication class, allowing it to be used for all requests made by that client. This is handled in the Client's constructor where `_build_auth` processes the auth parameter. [file:httpx/_client.py:188-210]
+
+3. **Making Requests with Authentication**: When a request is made using methods like `get`, `post`, etc., the client prepares the request and retrieves the authentication to be applied by calling the `_build_request_auth` method, which integrates the authentication instance. [file:httpx/_client.py:458-467]
+
+**Component Interactions**
+
+- The `Client` interacts with the various `Auth` subclasses when sending requests. For example, upon calling `send`, the method fetches the appropriate auth to be used, enabling the request context to include the necessary authentication header. [file:httpx/_client.py:912-917]
+
+**Internals**
+
+- **Storing Credentials**: The `BasicAuth` class, for instance, constructs the authorization header by encoding the username and password using Base64. This is done in the `_build_auth_header` method. [file:httpx/_auth.py:139-142]
+- **Error Handling**: HTTPX manages errors that can occur during authentication through the `HTTPError` exceptions, specifically if the server responds with a 401 Unauthorized status code. [file:httpx/_exceptions.py:74-268]
+
+**Summary**
+
+HTTPX efficiently handles authentication by providing a flexible and extensible architecture that can accommodate various authentication schemes. With solid encapsulation in the `Auth` classes and integration into the request lifecycle via the `Client`, it allows developers to implement secure HTTP interactions seamlessly.
 
 **Files Analyzed:**
-- `httpx/_auth.py` - lines 1-300
-- `httpx/_client.py` - lines 850-900
+- `httpx/_auth.py` - lines 22-32, 126-142, 135-137, 139-142, 145-165, 175-327
+- `httpx/_client.py` - lines 188-210, 458-467, 912-917
+- `httpx/_exceptions.py` - lines 74-268
 
 ---
 
@@ -425,16 +457,43 @@ The auth object is applied to requests in [file:httpx/_client.py:850-900] where 
 **Query:** "How does connection pooling work in httpx?"
 
 **Answer:**
-Connection pooling is managed by the transport layer. The `HTTPTransport` class maintains a pool of connections to reuse across requests, improving performance.
 
-The pool is created in [file:httpx/_transports/default.py:100-200] and managed through the `ConnectionPool` class. Connections are reused when:
-1. The target host and port match
-2. The connection is still alive
-3. The pool hasn't exceeded its size limit
+Connection pooling in httpx is handled primarily by the `HTTPTransport` class, which manages a pool of connections for efficient reuse.
+
+**High-Level Architecture**
+
+- **Transport Layer**: The `HTTPTransport` class is responsible for managing the connection pool. When a new request is made, `HTTPTransport` will either reuse an existing connection or establish a new one if none are available. [file:httpx/_transports/default.py:135-166]
+- **Connection Pooling Logic**: Inside `HTTPTransport`, a `ConnectionPool` is created to hold the active connections, ensuring that connections are reused for requests with the same parameters, thus improving performance. This is configured with maximum connection limits, timeouts, and expiration settings. [file:httpx/_transports/default.py:150-166]
+
+**Lifecycle Explanation**
+
+1. **Pool Initialization**: When the `Client` is instantiated, the transport initializes the connection pool with specified limits such as maximum connections and keep-alive settings. [file:httpx/_client.py:661-715]
+
+2. **Request Handling**: Upon making a request, the `handle_request` method checks if there are available connections in the pool. If not, new connections are created. The key logic here is to maintain a pool of live connections that can be quickly accessed. [file:httpx/_transports/default.py:230-260]
+
+3. **Connection Reuse**: Each request checks the connection pool to see if a connection can be reused. If a connection exists that matches the parameters of the request, it will be reused. This minimizes the overhead of establishing a new connection for each request. [file:httpx/_transports/base.py:30-48]
+
+4. **Cleanup**: When the client is closed or the connections are no longer needed, the pool is also closed, effectively releasing all network resources. This happens in the `close` method of the `HTTPTransport` and `Client` classes. [file:httpx/_client.py:1263-1274] [file:httpx/_transports/base.py:260-261]
+
+**Component Interactions**
+
+- **Client and Transport Interaction**: The `Client` calls methods of `HTTPTransport` when sending requests. For example, it calls `handle_request()` where the pooling logic is invoked to obtain a connection. [file:httpx/_client.py:231-259]
+- **Event Hooks**: Event hooks allow for a more advanced interaction if required (like logging or modifying requests), providing an extensible way to manage connections and resources during the request lifecycle. [file:httpx/_client.py:215-220]
+
+**Key Implementation Locations**
+
+Connection pooling is mainly handled in the `HTTPTransport` constructor and its methods:
+- [file:httpx/_transports/default.py:135-166]
+- [file:httpx/_transports/base.py:30-48]
+
+**Summary**
+
+Connection pooling in httpx optimizes network resource usage by reusing connections across requests, significantly reducing latency associated with establishing new connections. The pooling mechanism is intrinsically tied to the transport layer, which manages the lifecycle of connections based on defined limits and protocols.
 
 **Files Analyzed:**
-- `httpx/_transports/default.py` - lines 100-200
-- `httpx/_transports/base.py` - lines 50-150
+- `httpx/_transports/default.py` - lines 135-166, 150-166, 230-260
+- `httpx/_transports/base.py` - lines 30-48, 260-261
+- `httpx/_client.py` - lines 215-220, 231-259, 661-715, 1263-1274
 
 ---
 
@@ -443,21 +502,79 @@ The pool is created in [file:httpx/_transports/default.py:100-200] and managed t
 **Query:** "What exceptions can httpx raise and when?"
 
 **Answer:**
-httpx defines several exception types in [file:httpx/_exceptions.py:1-200]:
 
-- `HTTPError`: Base class for all HTTP-related errors
-- `RequestError`: Raised when a request fails (network issues, timeouts)
-- `HTTPStatusError`: Raised for HTTP error status codes (4xx, 5xx)
-- `TimeoutException`: Raised when a request times out
+The httpx library raises various exceptions depending on the context of HTTP requests and responses. Below is a list of key exceptions and the circumstances under which they are raised, as found in the code.
 
-These exceptions are raised at different stages:
-- `RequestError` during connection establishment ([file:httpx/_client.py:1200-1250])
-- `HTTPStatusError` after receiving response with error status ([file:httpx/_client.py:1100-1150])
-- `TimeoutException` when request exceeds timeout ([file:httpx/_client.py:1000-1050])
+**Exception Hierarchy**
+
+**HTTPError** [file:httpx/_exceptions.py:74]
+- Description: Base class for all HTTP-related errors
+- When: Raised during any HTTP error scenario, particularly when a request fails
+
+**RequestError** (inherits from HTTPError) [file:httpx/_exceptions.py:108]
+- Description: Base class for exceptions that occur while issuing a request
+- When: Raised for all types of request issues, including network failures
+
+**TransportError** (inherits from RequestError) [file:httpx/_exceptions.py:123]
+- Description: Base class for transport-related errors
+- When: Raised for lower-level transport issues, like connection timeouts
+
+**TimeoutException** (inherits from TransportError) [file:httpx/_exceptions.py:132]
+- Description: Raised when a timeout occurs
+- When: Specifically for timeout scenarios when waiting for a response or connection
+- **Subclasses:**
+  - `ConnectTimeout`: Raised when a connection times out. [file:httpx/_exceptions.py:140]
+  - `ReadTimeout`: Raised when reading data times out. [file:httpx/_exceptions.py:146]
+  - `WriteTimeout`: Raised when writing data times out. [file:httpx/_exceptions.py:152]
+  - `PoolTimeout`: Raised when acquiring a connection from the pool times out. [file:httpx/_exceptions.py:158]
+
+**NetworkError** (inherits from TransportError) [file:httpx/_exceptions.py:167]
+- Description: Base class for network-related errors
+- When: Used for errors occurring while communicating over the network
+- **Subclasses:**
+  - `ConnectError`: Raised when a connection can't be established. [file:httpx/_exceptions.py:187]
+  - `ReadError`: Raised when data cannot be read from the network. [file:httpx/_exceptions.py:175]
+  - `WriteError`: Raised when data cannot be sent over the network. [file:httpx/_exceptions.py:181]
+  - `CloseError`: Raised when a connection fails to close properly. [file:httpx/_exceptions.py:193]
+
+**ProtocolError** (inherits from TransportError) [file:httpx/_exceptions.py:216]
+- Description: Raised when the HTTP protocol is violated
+- When: Raised due to issues like missing headers or invalid HTTP responses
+- **Subclasses:**
+  - `LocalProtocolError`: Raised for protocol violations by the client. [file:httpx/_exceptions.py:222]
+  - `RemoteProtocolError`: Raised for protocol violations by the server. [file:httpx/_exceptions.py:232]
+
+**DecodingError** (inherits from RequestError) [file:httpx/_exceptions.py:243]
+- Description: Raised when decoding the response fails due to malformed content
+- When: Occurs during response processing when the data format is not as expected
+
+**TooManyRedirects** (inherits from RequestError) [file:httpx/_exceptions.py:249]
+- Description: Raised when too many redirects are encountered
+- When: If the number of redirects exceeds a predefined limit
+
+**InvalidURL** [file:httpx/_exceptions.py:258]
+- Description: Raised when an invalid URL is provided
+- When: Occurs during URL parsing or validation processes
+
+**CookieConflict** [file:httpx/_exceptions.py:275]
+- Description: Raised when there is a conflict in cookies for the same name
+- When: Happens when attempting to retrieve a cookie that has multiple values
+
+**StreamError** (inherits from RuntimeError) [file:httpx/_exceptions.py:297]
+- Description: Base class for errors related to stream handling
+- When: Indicates issues related to incorrect usage of stream operations
+- **Subclasses:**
+  - `StreamConsumed`: Raised when trying to read from a stream that has already been consumed. [file:httpx/_exceptions.py:309]
+  - `StreamClosed`: Raised when attempting to read from a closed stream. [file:httpx/_exceptions.py:327]
+  - `ResponseNotRead`: Raised when accessing response content without calling `read()`. [file:httpx/_exceptions.py:338]
+  - `RequestNotRead`: Raised when accessing request content without calling `read()`. [file:httpx/_exceptions.py:351]
+
+**Summary**
+
+This hierarchy allows httpx to provide clear and structured error reporting, giving developers the information needed to handle various scenarios effectively.
 
 **Files Analyzed:**
-- `httpx/_exceptions.py` - lines 1-200
-- `httpx/_client.py` - lines 1000-1250
+- `httpx/_exceptions.py` - lines 74, 108, 123, 132, 140, 146, 152, 158, 167, 175, 181, 187, 193, 216, 222, 232, 243, 249, 258, 275, 297, 309, 327, 338, 351
 
 ---
 
