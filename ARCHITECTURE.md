@@ -880,49 +880,6 @@ const contents = await Promise.all(
    - No external data transmission
    - Repositories isolated in `.repos/` directory
 
-####  Gaps & Recommendations
-
-1. **Rate Limiting** (Critical)
-   - **Current**: None
-   - **Risk**: DoS attacks, cost abuse
-   - **Recommendation**: Per-IP limits (100 req/hour), per-user limits if auth added
-   - **Status**: Not implemented, high priority
-
-2. **Path Traversal Protection** (High)
-   - **Current**:  Comprehensive sanitization via `sanitizeFilePath()`
-   - **Implementation**: Removes `..`, normalizes paths, length limits
-   - **Status**:  Implemented
-
-3. **Input Sanitization** (Medium)
-   - **Current**:  Comprehensive sanitization library (`security-utils.ts`)
-   - **Implementation**: 
-     - Prompt injection prevention
-     - XSS prevention (markdown, SVG, HTML)
-     - Path sanitization
-     - Input validation
-   - **Status**:  Implemented
-
-4. **AI Security** (High)
-   - **Current**:  Function calling enforcement, prompt injection protection
-   - **Implementation**:
-     - Strict function calling requirements
-     - Retry logic for text rejection
-     - False positive validation
-     - Response sanitization
-   - **Status**:  Implemented
-
-5. **Authentication** (Medium - if multi-user)
-   - **Current**: None
-   - **Risk**: Unauthorized access
-   - **Recommendation**: OAuth integration, session management
-   - **Status**: Not implemented, medium priority
-
-6. **Security Headers** (Low)
-   - **Current**: Basic Next.js defaults
-   - **Risk**: XSS, clickjacking
-   - **Recommendation**: CSP, HSTS, X-Frame-Options
-   - **Status**: Not implemented, low priority
-
 ### Security Scanning Architecture
 
    ```typescript
@@ -985,73 +942,8 @@ const contents = await Promise.all(
 - Separation of concerns
 - Clean component structure
 
-###  Needs Improvement (Before Production)
-
-#### Critical (Must Have)
-
-1. **Persistent Caching**
-   - **Current**: In-memory (lost on restart)
-   - **Impact**: High (affects performance and cost)
-   - **Solution**: Redis integration
-   - **Effort**: 2-3 days
-
-2. **Rate Limiting**
-   - **Current**: None
-   - **Impact**: High (vulnerable to abuse)
-   - **Solution**: Per-IP limits, middleware
-   - **Effort**: 1-2 days
-
-3. **Error Tracking**
-   - **Current**: Console.log only
-   - **Impact**: High (can't debug production issues)
-   - **Solution**: Sentry integration
-   - **Effort**: 1 day
-
-4. **Repository Cleanup**
-   - **Current**: No cleanup (disk fills up)
-   - **Impact**: Medium (disk space concerns)
-   - **Solution**: LRU cache with size limits
-   - **Effort**: 2-3 days
-
-#### High Priority (Within 3 Months)
-
-1. **Monitoring & Observability**
-   - Structured logging (Winston/Pino)
-   - Metrics (Prometheus/Grafana)
-   - Performance monitoring
-   - **Effort**: 3-5 days
-
-2. **Database Integration**
-   - PostgreSQL for metadata
-   - Analytics and usage tracking
-   - **Effort**: 5-7 days
-
-3. **Background Job Processing**
-   - Bull/BullMQ for long-running tasks
-   - Repository cloning in background
-   - **Effort**: 3-5 days
-
-#### Medium Priority (3-6 Months)
-
-1. **Horizontal Scaling**
-   - Load balancer
-   - Shared cache (Redis)
-   - Shared storage (S3/GCS)
-   - **Effort**: 1-2 weeks
-
-2. **API Layer**
-   - RESTful API for integrations
-   - API key management
-   - **Effort**: 1 week
-
-3. **Testing Suite**
-   - Unit tests (Jest/Vitest)
-   - Integration tests
-   - E2E tests (Playwright)
-   - **Effort**: 2-3 weeks
-
----
-
+  
+   ---  
 ## Design Decisions & Trade-offs
 
 ### Decision 1: CAG over RAG
@@ -1163,7 +1055,6 @@ User → Next.js App → Local FS → OpenAI
 **Limitations:**
 - Single point of failure
 - No horizontal scaling
-- Cache lost on restart
 - Disk space accumulates
 
 **Capacity:**
